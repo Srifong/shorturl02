@@ -24,7 +24,6 @@ import string
 from django.conf import settings
 from datetime import datetime,date,timedelta
 
-
 from random import choices
 from string import ascii_letters
 from django.conf import settings
@@ -202,20 +201,26 @@ class ShortenerCreateApiView(APIView):
                 album = request.data.get('name_album')
                 date = datetime.now()
                 key = 0
-                check_date = False
                 name_album =Album.objects.using(testmongo).get(pk = album)
                 url = [{'ชื่อ url':request.data.get('original_link'),"ชื่อ album": name_album.name_album}]
                 if request.data.get('key'):
                     key = request.data.get('key')
                     new_link = f"{new_link}{key}"
-                    data = {"key" : key}
-                    url.append(data)
-                
-                if request.data.get('ex_date'):
+                    key_data = {"key" : key}
+                    url.append(key_data)
+
+                if request.data.get('check_date') == 0:
+                    check_date = False
+                    date_data = {"Ent Date" : 'No'}
+                    url.append(date_data)
+
+                print(request.data.get('check_date') == 1)
+                if request.data.get('check_date') == 1:
                     check_date = True
                     date = request.data.get('ex_date')
-                    data = {"วันหยุดอายุ" : date}
-                    url.append(data)
+                    print(date)
+                    date_data = {"Ent Date" : date}
+                    url.append(date_data)
 
                 if request.data.get('name_album'):
                     img = qrcode.make(f'{user_id}{random_string}qr')
@@ -247,7 +252,7 @@ class ShortenerCreateApiView(APIView):
 
                 )
                 savecount.save()
-                data = {
+                data1 = {
                     'message': 'Created Successfully',
                     'original_link' : request.data.get('original_link'),
                     'short_URL': new_link,
@@ -260,8 +265,9 @@ class ShortenerCreateApiView(APIView):
                 id_shorturl = Link.objects.using(testmongo).get(shortened_link=new_link)
                 story = call_cal.story(request.user,'สร้าง url',url,id_shorturl.pk)
                 log_api = call_cal.log_api(request.path,'',request.META['HTTP_USER_AGENT'],json.dumps(request.data), request.method)
-                return Response(data)
+                return Response(data1)
         except Exception as error:
+            print("error", error)
             call_cal = cal()
             log_api = call_cal.log_api(request.path,error,request.META['HTTP_USER_AGENT'],json.dumps(request.data), request.method)
             return Response({
@@ -329,7 +335,7 @@ class ShortenerListAPIView(ListAPIView):
             shortenerlinst = Link.objects.using(testmongo).filter(create_by_id__username= request.user,status_delete__in = [False])
             if len(shortenerlinst) != 0:
                 for i in shortenerlinst:
-                    resultcount = count.objects.using(testmongo).filter(Link_by__pk = i.pk)
+                    resultcount = count.objects.using(testmongo).filter(Link_by_id__in = [i.pk])
                     sum_all  = sum_all + len(resultcount)
                     if (i.check_date == 1) and (datetime.now().strftime("%Y-%m-%d")> i.ex_date.strftime("%Y-%m-%d")):
                         ex_date_no_play = 1
@@ -351,12 +357,14 @@ class ShortenerListAPIView(ListAPIView):
                 log_api = call_cal.log_api(request.path,'',request.META['HTTP_USER_AGENT'],json.dumps(request.data), request.method)
                 return Response(result)
             else:
+                print("no url")
                 call_cal = cal()
                 log_api = call_cal.log_api(request.path,'',request.META['HTTP_USER_AGENT'],json.dumps(request.data), request.method)
                 return Response({
                 'message': ''
             })
         except Exception as error:
+            print("error",error)
             call_cal = cal()
             log_api = call_cal.log_api(request.path,error,request.META['HTTP_USER_AGENT'],json.dumps(request.data), request.method)
             return Response({
@@ -420,7 +428,7 @@ class ShortenerUpdateApiView(APIView):
                 number_random = UpdateLink.number_random
                 new = f'{settings.HOST_URL}/api/url/{number_random}'
                 new_short_link = f"{new}{key}"
-                UpdateLink.shortened_link = new_short_link    
+                UpdateLink.shortened_link = new_short_link 
                 UpdateLink.key = key
                 # UpdateLink.name_qr = f'{request.user}{number_random}{key}qr'
                 # img = qrcode.make(new_short_link)
@@ -436,25 +444,24 @@ class ShortenerUpdateApiView(APIView):
                 #     return storage.url(path)
                 # except Exception as e:
                 #     print('')
-                if UpdateLink.date_now.strftime("%Y-%m-%d") <  request.data.get('ex_date'):
-                    print(123,"yes")
+                if request.data.get('check_date') == 0:
+                    UpdateLink.check_date = False
+                print( request.data.get('check_date'),33333333333333)
+                if request.data.get('check_date') == 1:
+                    print(11111111111111122222222222)
                     UpdateLink.check_date = True
                     UpdateLink.ex_date= request.data.get('ex_date')
-                elif UpdateLink.date_now.strftime("%Y-%m-%d") ==  request.data.get('ex_date'):
-                    print('NO')
-                    UpdateLink.check_date = False
-                    UpdateLink.ex_date= request.data.get('ex_date')
-                name=request.data.get('name_album')
-                UpdateLink.name_album =name
-                UpdateLink.save()
 
+                name=request.data.get('name_album')
+                UpdateLink.name_album = name
+                UpdateLink.save()
+                
                 data = {
                     "ชื่อ url" : request.data.get('original_link'),
                     "key" : request.data.get('key'),
-                    "ชื่อ Album" : name.name_album
+                    "ชื่อ Album" : UpdateLink.name_album
                     }
                 update.append(data)
-                print(data)
 
 
                 call_cal = cal()
@@ -470,6 +477,7 @@ class ShortenerUpdateApiView(APIView):
                 'message': ''
                 })
         except Exception as error:
+            print(error,"error")
             call_cal = cal()
             log_api = call_cal.log_api(request.path,error,request.META['HTTP_USER_AGENT'],json.dumps(request.data), request.method)
             return Response({
@@ -744,7 +752,7 @@ class StoryAPIView(ListAPIView):
         try:
             result = []
 
-            story = Story.objects.using(testmongo).filter(short_url_by=pk)
+            story = Story.objects.using(testmongo).filter(short_url_by_id=pk)
             for i in story:
                 # if i.date.strftime("%d/%m/%Y") == datetime.now().strftime("%d/%m/%Y"):
                 date = i.date.strftime("%d/%m/%Y") 
