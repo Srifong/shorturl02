@@ -27,7 +27,9 @@ SECRET_KEY = 'django-insecure-c@5(_+d+@h9#v^bgt(#t6=m#*c)gp-i73ni-@tz2ez80a@^9_2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
+
+
 CORS_ALLOWED_ORIGINS =['http://127.0.0.1:8000','http://localhost:8080']
 # ALLOWED_HOSTS = ['198.211.99.20', 'localhost', '127.0.0.1']
 
@@ -145,7 +147,7 @@ STATIC_URL = '/static/'
 
 # STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 # STATICFILES_DIRS = (os.path.join(BASE_DIR,'static'))
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
 
 
 # Default primary key field type
