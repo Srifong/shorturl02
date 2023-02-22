@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="D:\mongo\python01\testmongo\env"
+VIRTUAL_ENV="D:\test\ShortURL\env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
