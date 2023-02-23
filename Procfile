@@ -1,0 +1,1 @@
+web: web: sh -c 'cd ./testmongo/ && testmongo ' 
