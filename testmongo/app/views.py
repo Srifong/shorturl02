@@ -278,7 +278,8 @@ class Redirector(View):
     def get(self,request,shortener_link,*args, **kwargs):
         try:
             try:
-                qr = Link.objects.using(testmongo).get(name_qr = shortener_link)
+                qr = Link.objects.using(testmongo).get(name_qr = f"https://pythonshorturl.herokuapp.com/api/url/{shortener_link}")
+                print( f"https://pythonshorturl.herokuapp.com/api/url/{shortener_link}",111111111111111111111111111111111111111)
                 if qr.check_date == 0 and qr.status_delete == 0:
                     call_cal = cal()
                     log_api = call_cal.log_api(request.path,'',request.META['HTTP_USER_AGENT'],'', request.method)
