@@ -248,7 +248,7 @@ class ShortenerCreateApiView(APIView):
                     key = key,
                     check_date = check_date,
                     code = f'{user_id}{random_string}qr.png',
-                    name_qr = f'{user_id}{random_string}qr'
+                    name_qr = f'{new_link}qrcode'
 
                 )
                 savecount.save()
