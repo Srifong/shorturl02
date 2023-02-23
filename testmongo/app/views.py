@@ -223,7 +223,7 @@ class ShortenerCreateApiView(APIView):
                     url.append(date_data)
 
                 if request.data.get('name_album'):
-                    img = qrcode.make(f'{user_id}{random_string}qr')
+                    img = qrcode.make(f'{new_link}qrcode')
                     buf = io.BytesIO()
                     img.save(buf,"PNG")
                     buf.seek(0)
