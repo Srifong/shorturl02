@@ -298,7 +298,7 @@ class Redirector(View):
                         return Response({
                         'message': 'หมดเวลาแล้ว'})
             except Link.DoesNotExist:
-                a = f"http://127.0.0.1:8000/api/url/{shortener_link}"
+                a = f"https://pythonshorturl.herokuapp.com/api/url/{shortener_link}"
                 redirect_link = Link.objects.using(testmongo).get(shortened_link=a)
                 if redirect_link.check_date == 1 and redirect_link.status_delete == 0 :
                     if datetime.now().strftime("%Y-%m-%d")< redirect_link.ex_date.strftime("%Y-%m-%d") :

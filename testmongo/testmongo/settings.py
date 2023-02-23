@@ -164,7 +164,7 @@ GS_BUCKET_NAME = 'my_project_short_url_01'
 
 
 
-HOST_URL='http://127.0.0.1:8000'
+HOST_URL='https://pythonshorturl.herokuapp.com'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
