@@ -1,1 +1,1 @@
-web: web: sh -c 'cd ./testmongo/ && python manage.py runserver 0.0.0.0:\$PORT ' 
+web: sh -c 'cd ./testmongo/ && python manage.py runserver 0.0.0.0:\$PORT ' 
