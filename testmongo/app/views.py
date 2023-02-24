@@ -327,7 +327,6 @@ class Redirector(View):
                 'message': ''
             },)
 
-
 class ShortenerListAPIView(ListAPIView):
     def get(self, request,  *args, **kwargs):
         try:
