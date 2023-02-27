@@ -202,11 +202,12 @@ class ShortenerCreateApiView(APIView):
                 date = datetime.now()
                 key = 0
                 name_album = None
-                name_album =Album.objects.using(testmongo).get(pk = album ,status_delete__in = [False])
-                if name_album == None:
+                try:
+                    name_album =Album.objects.using(testmongo).get(pk = album ,status_delete__in = [False])
+                except Album.DoesNotExist:
                     album = Album(name_album = 'collection 1',create_by = user_id)
                     album.save()
-                name_album =Album.objects.using(testmongo).get(pk = album ,status_delete__in = [False])
+                    name_album =Album.objects.using(testmongo).get(pk = album ,status_delete__in = [False])
                 url = [{'ชื่อ url':request.data.get('original_link'),"ชื่อ album": name_album.name_album}]
                 if request.data.get('key'):
                     key = request.data.get('key')
