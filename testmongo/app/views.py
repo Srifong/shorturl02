@@ -70,7 +70,7 @@ class UserCreate(APIView):
                     # สร้าง Album ให้เองตอนสมัคร
                     user_album = User.objects.using(testmongo).get(email=email)
                     id_album = user_album
-                    album = Album(name_album = 'Album 1',create_by = id_album)
+                    album = Album(name_album = 'collection 1',create_by = id_album)
                     album.save()
                     Token.objects.using(testmongo).create(user=user)
                     call_cal = cal()
@@ -88,7 +88,7 @@ class UserCreate(APIView):
                     # สร้าง Album ให้เองตอนสมัคร
                     user_album = User.objects.using(testmongo).get(email=email)
                     id_album = user_album
-                    album = Album(name_album = 'Album 1',create_by = id_album)
+                    album = Album(name_album = 'collection 1',create_by = id_album)
                     album.save()
                     Token.objects.using(testmongo).create(user=user)
                     call_cal = cal()
@@ -201,7 +201,12 @@ class ShortenerCreateApiView(APIView):
                 album = request.data.get('name_album')
                 date = datetime.now()
                 key = 0
+                name_album = None
                 name_album =Album.objects.using(testmongo).get(pk = album)
+                print(name_album)
+                if name_album == None:
+                    create_album = Album(name_album = 'collection 1',create_by = user_id)
+                    create_album.save()
                 url = [{'ชื่อ url':request.data.get('original_link'),"ชื่อ album": name_album.name_album}]
                 if request.data.get('key'):
                     key = request.data.get('key')
